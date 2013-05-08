@@ -1,0 +1,187 @@
+body {
+    font-size: 13px;
+}
+
+input {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+input,
+textarea,
+select,
+.uneditable-input {
+	padding: 3px;
+}
+
+select {
+	height: 26px;
+}
+
+input[type='checkbox'] {
+	margin-top: 8px;
+}
+
+@-moz input {
+	height: 28px;
+}
+	
+#layoutheader {
+    height: auto;
+    padding: 0;
+}
+
+.dataTables_length select {
+	height: 28px;
+}
+
+.form-actions div.alert {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+}
+
+legend > i {
+	margin-top: 5px;
+}
+
+fieldset legend {
+	margin-bottom: 0px;
+}	
+
+.nav {
+    margin-bottom: 0;
+}
+
+.breadcrumb {
+    margin-top: 3px;
+    margin-bottom: 0!important;
+    line-height: 22px;
+    float:none;
+    border: 0;
+    padding: 7px 4px 7px 14px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+div.bar, div.progress {
+    height: 24px!important;
+}
+
+.outer-center {
+    background: #efefef;
+}
+
+.form-actions {
+    margin-top: 0px;
+}
+
+.section-header {
+    background: #efefef;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.section-header button {
+	margin-top:  4px;
+	margin-left: 4px;
+}
+
+.section-header h1 {
+    font-size: 1.5em;
+    padding-left: 6px;
+}
+
+.section-header img {
+    padding-right: 10px;
+    margin-top: -5px;
+}
+
+.section-contents h2 {
+    font-size: 19.5px;
+    font-weight: normal;
+    border-bottom:  1px solid #EEE;
+    margin-left: 8px!important;
+    margin-right: 6px!important;
+    padding-top: 10px;
+}
+
+.section-contents {
+    min-height: 100px;
+    padding-top: 5px;
+}
+
+.section-contents .nav {
+	padding: 0px 10px;
+}
+
+.toolbarcontainer {
+    height: 28px;
+    padding: 4px;
+    line-height: 12px;
+}
+
+.toolbarcontainer form {
+    margin-bottom: 0px;
+}
+
+.dynamic-form-list .header span {
+	padding: 4px;
+    margin-left: 6px;
+    margin-right: -6px;
+}
+
+.dynamic-form-list div.header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 4px;
+}
+
+.dynamic-form-list .contents input {
+    margin: 0px 4px;
+}
+
+.dynamic-form-list .contents select {
+    margin: 0px 4px;
+}
+
+.dynamic-form-list .contents div.control-group {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin-bottom: 0px!important;
+}
+
+.dynamic-form-list div.actions {
+	border-top: 1px solid #eee;
+	padding-top: 4px;
+}
+
+.dynamic-form-list .actions button {
+	margin-left: 4px;
+}
+
+.table tfoot select {
+	width: 100%;
+}
+
+.table tfoot input {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height:28px;
+}
+
+.table tfoot th {
+    padding: 4px;
+}
+
+.modal form.form-horizontal {
+	margin-bottom: 0px;
+}
+
+.modal div.alert {
+	margin: 0 0 0 18px;
+	text-align: left;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}

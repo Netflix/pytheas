@@ -1,0 +1,189 @@
+/*****************************************************************************
+ *  NAVIGATION MENU
+ ****************************************************************************/
+.navcontainer { width: 100%; padding: 0px; border-bottom: 1px solid #AAA }
+.nav      { margin: 0!important; border-color: #AAA; padding: 0; float: left; display:block;}
+.nav li   { border-color: #AAA; padding: 0 0 10px 0; border-style: solid; border-width: 0 1px 0 0; font-size: 10px; margin: 0; white-space: nowrap; display: block; float: left; height: 25px; position: relative; z-index: 2; min-width: 12em }
+
+.nav li.selected { background-color: #C8D6DF }
+
+.nav li a { font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; padding: 10px 12px 11px 12px; background-position: 11px 5px; background-repeat: no-repeat; display: block; line-height: 14px; color: #333; text-decoration: none; font-weight: bold}
+.dropdown { background:       url("images/downarrowdark.gif") no-repeat scroll 98% 92% transparent; }
+.nav, th  { color: #333; }
+
+.nav  { background-image: -moz-linear-gradient(center bottom, #DDD 0%, white 50%); }
+.nav  { background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #DDD), color-stop(0.5, white)); }
+
+.nav { background-image: moz-linear-gradient(top,white,#eee); }
+.nav { background-image: -webkit-linear-gradient(top,white,#eee); }
+.nav { background-image: -o-linear-gradient(top,white,#eee); }
+
+.nav li ul          { background-color: #EAEAEA; padding: 0; display: none; position: relative; margin-left: -1px; z-index: 10000; }
+.nav li:hover       { background-color: #D8E6FF; }
+.nav li:hover ul    { display: block; }
+.nav li ul li       { border-color: #AAA; border-width: 0 1px 1px 1px; border-style: solid; float: none; }
+.nav li ul li:first-child { border-top-width: 1px; }
+
+/*****************************************************************************
+ *  DIV input style
+ ****************************************************************************/ 
+.div-input-style {
+    padding: 10px;
+}
+
+.div-input-style ul {
+    border:0; margin-bottom:4px; padding:0; list-style:none;
+}
+
+.div-input-style li {
+    border:0; margin: .4em 0; padding:0; list-style:none;
+}
+
+.div-input-style .section-container {
+    border: 1px solid #aaa;
+    margin: 8px;
+    display:block;
+    background: #fff;
+}
+
+.div-input-style .section-footer {
+    clear: both;
+}
+
+.div-input-style .form-message.error {
+    color: red;
+}
+
+.div-input-style .form-message.success {
+    color: green;
+}
+
+.div-input-style .form-message.processing {
+    color: black;
+}
+
+.div-input-style .section-title {
+    border-bottom: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+    width: 12em;
+    padding: 5px;
+    float: left;
+    position:relative;
+    background: #667;
+    color: #fff;
+}
+
+.div-input-style .section-contents {
+    padding: 8px;
+    margin-left: 50px;
+    float: left;
+    width: auto;
+}
+
+.div-input-style .required-indicator {
+    margin-left: 0.5em;
+    padding-top: 1.5em;
+}
+
+.div-input-style label {
+    width: 9em;
+    display: inline;
+    float: left;
+    text-align: right;
+    margin: 0.2em 1em 0 0;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.div-input-style input[type="text"]{
+    margin: 0em;
+}
+    
+.div-input-style input[type="text"]{
+    width: 33em;
+}
+
+.div-input-style input[type="checkbox"]{
+    width: 1em;
+    margin: 0.2me 0 1em 0;
+}
+
+.div-input-style input[type="radio"]{
+    width: 2em;
+    margin: 0.6em 0px;
+    float: left;
+}
+
+.div-input-style select {
+    width: 25em;
+}
+
+.div-input-style .constant {
+    width: 33em;
+    font-size: 0.9em;
+    margin-top: 0.2em;
+}
+
+.div-input-style .select-filter {
+    width: 100px !important;
+}
+
+.div-input-style .radio-group-horizontal label {
+    text-align: left;
+}
+    
+.div-input-style em.error {
+    float: right;
+    color: red;
+    background: none;
+    margin-top: .5em;
+}
+
+/*****************************************************************************
+ *  Form
+ ****************************************************************************/
+.stylized ol, .stylized ul {
+    list-style: none;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+}
+
+.stylized li {
+    clear: both;
+    margin: 0 0 .75em;
+    padding: 0;
+}
+
+.stylized label {
+    display: block;
+    float: left;
+    line-height: 1.8;
+    margin-right: 10px;
+    text-align: right;
+    width: 200px;
+    font-weight: 600;
+    font-size: .8em;
+}
+
+.stylized legend {
+    line-height: 1.8;
+    padding: .2em .8em;
+    font-size:.9em;
+}
+
+.stylized input, .stylized select {
+    width: 250px;
+    font-size: .8em;
+}
+
+.stylized .small {
+    width: 75px;
+}
+    
+.stylized fieldset {
+    margin: .3em;
+    padding: .3em;
+    border: 1px solid #ccc
+}
+
