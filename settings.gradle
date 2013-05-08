@@ -1,2 +1,2 @@
 rootProject.name='pytheas'
-include 'explorers-core', 'explorers-helloworld'
+include 'pytheas-core', 'pytheas-helloworld'

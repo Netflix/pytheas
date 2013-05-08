@@ -36,7 +36,7 @@ subprojects {
 }
 
 
-project(':explorers-core') {
+project(':pytheas-core') {
     apply plugin: 'java'
 
     dependencies {
@@ -61,13 +61,13 @@ project(':explorers-core') {
 
 }
 
-project(':explorers-helloworld') {
+project(':pytheas-helloworld') {
 
     apply plugin: 'jetty'
     apply plugin: 'war'
 
     dependencies {
-        compile project(':explorers-core')
+        compile project(':pytheas-core')
         compile 'com.netflix.karyon:karyon-core:1.0.2'
         compile 'com.netflix.karyon:karyon-extensions:1.0.2'
         testCompile 'org.eclipse.jetty:jetty-server:7.6.7.v20120910'
