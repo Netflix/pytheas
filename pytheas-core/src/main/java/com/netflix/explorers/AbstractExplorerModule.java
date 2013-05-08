@@ -228,6 +228,11 @@ public class AbstractExplorerModule implements Explorer {
     }
 
     @Override
+    public String getHome() {
+        return name; // by default home = /<exp-name>
+    }
+
+    @Override
     public String toString() {
         return "AbstractExplorerModule [name=" + name + ", title=" + title + ", description=" + description
                 + ", layoutName=" + layoutName + ", isSecure=" + isSecure + ", rootMenu=" + rootMenu

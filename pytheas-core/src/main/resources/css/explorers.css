@@ -12,6 +12,10 @@ h2 {
     margin-left: 19px!important;
 }
 
+table td {
+    word-wrap: break-word;
+}
+
 /**
  * Layout
  */

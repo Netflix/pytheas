@@ -146,4 +146,11 @@ public class ExplorersManagerImpl implements ExplorerManager {
         return "ExplorersManagerImpl [explorers=" + explorers + ", ExplorerGlobalContext="
                 + globalContext + "]";
     }
+
+    @Override
+    public void unregisterExplorer(Explorer module) {
+        LOG.info("Removing explorer module " + module.getName());
+        explorers.remove(module);
+    }
+
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.netflix.explorers.context;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +27,10 @@ public class RequestContext {
     private HttpServletRequest requestInvoker = null;
     
     public RequestContext() {
+    }
+    
+    public RequestContext(HttpServletRequest requestInvoker) {
+        setHttpServletRequest(requestInvoker);
     }
     
     public void setHttpServletRequest(HttpServletRequest requestInvoker) {

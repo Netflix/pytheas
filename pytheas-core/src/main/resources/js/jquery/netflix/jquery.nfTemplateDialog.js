@@ -97,7 +97,11 @@
                                 error       : function(jqXHR, textStatus, errorThrown) {
                                     var obj = jQuery.parseJSON( jqXHR.responseText );
                                     $alert.removeClass("alert-info").addClass('alert-error').html(obj.error).show();
-                                    settings.fnFailure(textStatus, obj.error);
+                                    if (obj.error) {
+                                        settings.fnFailure(textStatus, obj.error);
+                                    } else {
+                                        settings.fnFailure(textStatus, obj);
+                                    }
                                 }
                             });
                         }

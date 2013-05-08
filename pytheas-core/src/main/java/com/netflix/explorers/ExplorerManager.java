@@ -52,6 +52,12 @@ public interface ExplorerManager {
 	 * @param def
 	 */
 	void registerExplorer(Explorer module);
+
+    /**
+     * Remove a previously registered explorer
+     * @param remoteExplorerModule
+     */
+    void unregisterExplorer(Explorer module);
 	
 	/**
 	 * Register an explorer at runtime by giving a class name

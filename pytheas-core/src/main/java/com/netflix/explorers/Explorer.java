@@ -119,4 +119,10 @@ public interface Explorer {
      * @return
      */
     boolean getCmcEnabled();
+
+     /**
+     * Returns home url for the explorer
+     * @return
+     */
+    String getHome();
 }

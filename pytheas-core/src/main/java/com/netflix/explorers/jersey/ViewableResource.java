@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -32,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.netflix.explorers.Explorer;
 import com.netflix.explorers.annotations.Controller;
 import com.sun.jersey.api.view.Viewable;
@@ -41,19 +41,18 @@ public class ViewableResource {
     private static final Logger LOG = LoggerFactory.getLogger(ViewableResource.class);
     private static final String DEFAULT_ACTION = "index";
     
-    @Context
-    private Explorer    explorer;
-    
-    @Context
-    private UriInfo uriInfo;
+    private @Inject UriInfo uriInfo;
     
     private String name;
     
     private String defaultAction;
     
-    public ViewableResource() {
+    private Explorer explorer;
+    
+    public ViewableResource(Explorer explorer) {
         this.name = getName();
         this.defaultAction = DEFAULT_ACTION;
+        this.explorer = explorer;
     }
     
     @GET
@@ -75,6 +74,7 @@ public class ViewableResource {
                     Arrays.asList(uriInfo.getRequestUri().toString(),
                                   resource), 
                                   "/");
+            
             return Response.temporaryRedirect(new URI(redirect)).build();
         } catch (URISyntaxException e) {
             return Response.serverError().build();

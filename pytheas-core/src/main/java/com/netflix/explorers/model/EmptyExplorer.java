@@ -110,4 +110,9 @@ public class EmptyExplorer implements Explorer {
     public boolean getCmcEnabled() {
         return false;
     }
+
+    @Override
+    public String getHome() {
+        return "";
+    }
 }
