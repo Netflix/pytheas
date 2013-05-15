@@ -42,7 +42,7 @@ project(':pytheas-core') {
     dependencies {
         compile 'commons-configuration:commons-configuration:1.8'
         compile 'com.google.guava:guava:14.0'
-        compile 'org.sonatype.sisu.inject:guice-servlet:3.0'
+        compile 'com.google.inject.extensions:guice-servlet:3.0'
         compile 'org.codehaus.jettison:jettison:1.1'
         compile 'javax.servlet:servlet-api:2.5'
         compile 'com.sun.jersey:jersey-server:1.11'
