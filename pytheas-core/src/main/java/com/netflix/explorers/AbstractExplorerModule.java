@@ -72,17 +72,7 @@ public class AbstractExplorerModule implements Explorer {
     public void initialize() {
         LOG.info("Initialize " + name);
 
-        for ( int i = 0; i < propertyNameForms.length; ++i ) {
-            String form = propertyNameForms[i];
-            try {
-                loadPropertiesFile(form.replace("$NAME$", name));
-                break;
-            } catch (Exception e) {
-                if ( (i + 1) >= propertyNameForms.length ) {
-                    LOG.error("Failed to open property file for " + name, e);
-                }
-            }
-        }
+        loadPropertiesFileFromForms();
 
         String prefix = "com.netflix.explorers." + name + ".";
         config = getConfigInstance();
@@ -158,6 +148,21 @@ public class AbstractExplorerModule implements Explorer {
             }
         }
         LOG.info(toString());
+    }
+
+    protected void loadPropertiesFileFromForms()
+    {
+        for ( int i = 0; i < propertyNameForms.length; ++i ) {
+            String form = propertyNameForms[i];
+            try {
+                loadPropertiesFile(form.replace("$NAME$", name));
+                break;
+            } catch (Exception e) {
+                if ( (i + 1) >= propertyNameForms.length ) {
+                    LOG.error("Failed to open property file for " + name, e);
+                }
+            }
+        }
     }
 
     protected AbstractConfiguration getConfigInstance()
