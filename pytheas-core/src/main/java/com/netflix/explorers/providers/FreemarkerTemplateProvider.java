@@ -162,8 +162,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             vars.put("it", model);
         }
 
-        RequestContext requestContext = new RequestContext();
-        requestContext.setHttpServletRequest(requestInvoker != null ? requestInvoker.get() : null);
+        RequestContext requestContext = manager.newRequestContext(requestInvoker != null ? requestInvoker.get() : null);
         vars.put("RequestContext",  requestContext);
         vars.put("Request",         requestInvoker != null ? requestInvoker.get() : null);
         

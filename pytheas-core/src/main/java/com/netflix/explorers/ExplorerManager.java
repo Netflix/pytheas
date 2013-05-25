@@ -19,12 +19,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.netflix.explorers.context.RequestContext;
 import freemarker.cache.TemplateLoader;
 import org.apache.commons.configuration.Configuration;
 
 import com.google.common.base.Supplier;
 import com.google.inject.ImplementedBy;
 import com.netflix.explorers.context.GlobalModelContext;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Manages all explorer modules
@@ -145,4 +148,12 @@ public interface ExplorerManager {
      * @return list of ordered template loaders or an empty list (do NOT return <code>null</code>)
      */
     List<TemplateLoader> getAdditionalTemplateLoaders();
+
+    /**
+     * Allocate a new Request Context using the optional http request
+     *
+     * @param httpServletRequest http request - NOTE: can be <code>null</code>
+     * @return new request context
+     */
+    RequestContext newRequestContext(HttpServletRequest httpServletRequest);
 }
