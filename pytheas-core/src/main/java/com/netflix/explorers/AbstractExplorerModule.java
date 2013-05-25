@@ -85,7 +85,7 @@ public class AbstractExplorerModule implements Explorer {
         }
 
         String prefix = "com.netflix.explorers." + name + ".";
-        config = ConfigurationManager.getConfigInstance();
+        config = getConfigInstance();
 
         title       = config.getString(prefix + "title",       name + " (MissingTitle)");
         description = config.getString(prefix + "description", name + " (MissingDescription)");
@@ -158,6 +158,11 @@ public class AbstractExplorerModule implements Explorer {
             }
         }
         LOG.info(toString());
+    }
+
+    protected AbstractConfiguration getConfigInstance()
+    {
+        return ConfigurationManager.getConfigInstance();
     }
 
     @Override
