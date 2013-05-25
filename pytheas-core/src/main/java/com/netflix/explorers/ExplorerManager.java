@@ -16,8 +16,10 @@
 package com.netflix.explorers;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import freemarker.cache.TemplateLoader;
 import org.apache.commons.configuration.Configuration;
 
 import com.google.common.base.Supplier;
@@ -136,4 +138,11 @@ public interface ExplorerManager {
      * @return
      */
     boolean getHasAuthProvider();
+
+    /**
+     * Return list of optional Freemarker template loaders
+     *
+     * @return list of ordered template loaders or an empty list (do NOT return <code>null</code>)
+     */
+    List<TemplateLoader> getAdditionalTemplateLoaders();
 }

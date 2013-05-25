@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.common.collect.Lists;
+import freemarker.cache.TemplateLoader;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -153,4 +156,8 @@ public class ExplorersManagerImpl implements ExplorerManager {
         explorers.remove(module);
     }
 
+    @Override
+    public List<TemplateLoader> getAdditionalTemplateLoaders() {
+        return Lists.newArrayList();
+    }
 }
