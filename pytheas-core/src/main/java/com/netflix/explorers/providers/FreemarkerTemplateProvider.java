@@ -232,7 +232,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     			}
     	    	vars.put("nestedpage", resolvedPath);
     	    	
-                fmConfig.getTemplate("/layout/" + layout + "/main.ftl").process(vars, writer);
+                fmConfig.getTemplate(requestContext.getMainTemplatePath(layout)).process(vars, writer);
             }
     	
             if ( LOG.isDebugEnabled() )
@@ -245,7 +245,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             out.write( "</pre>".getBytes() );
         }
     }
-    
+
     @Context
     public void setServletContext( final ServletContext context )
     {
