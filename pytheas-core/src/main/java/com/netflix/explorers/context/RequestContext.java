@@ -92,7 +92,17 @@ public class RequestContext {
     public boolean getIsAjaxRequest() {
         return isAjaxRequest;
     }
-    
+
+    /**
+     * Return the path to the main FTL template based on the given layout
+     *
+     * @param layout layout
+     * @return path to main FTL template
+     */
+    public String getMainTemplatePath(String layout) {
+        return "/layout/" + layout + "/main.ftl";
+    }
+
     @Override
     public String toString() {
         return "Context [servletPath=" + getServletPath() + ", contextPath=" + getContextPath() + ", explorerName="

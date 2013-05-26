@@ -15,31 +15,27 @@
  */
 package com.netflix.explorers.resources;
 
-import java.security.MessageDigest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ContextResolver;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.netflix.config.ConfigurationManager;
+import com.netflix.explorers.ExplorerManager;
+import com.netflix.explorers.context.RequestContext;
+import com.netflix.explorers.providers.SharedFreemarker;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.netflix.explorers.ExplorerManager;
-import com.netflix.explorers.context.RequestContext;
-import com.netflix.explorers.providers.SharedFreemarker;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Response;
+import java.security.MessageDigest;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 @Path("/min")
@@ -71,7 +67,7 @@ public class MinifiedContentResource {
         String mediaType = EXT_TO_MEDIATYPE.get(ext);
         
         final Map<String,Object> vars = new HashMap<String, Object>();
-        RequestContext requestContext = new RequestContext();
+        RequestContext requestContext = manager.newRequestContext(null);
         vars.put("RequestContext",  requestContext);
         vars.put("Global",          manager.getGlobalModel());
         vars.put("Explorers",       manager);
