@@ -35,6 +35,9 @@ Missing body macro for ${nestedpage}
 <html>
   <head>
     <@head/>
+    <#if basehref?exists>
+        <base href="${basehref}">
+    </#if>
   </head>
   <body>
     <div class="outer-north">
