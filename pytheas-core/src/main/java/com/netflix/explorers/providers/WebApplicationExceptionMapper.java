@@ -55,8 +55,6 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
     
     @Override
     public Response toResponse(WebApplicationException error) {
-        LOG.warn("WebApplicationExceptionMapper " + error.getResponse().getStatus() + " " + error.getMessage(), error);
-        
         if (error.getResponse() != null && (error.getResponse().getStatus() / 100) == 3) {
             LOG.warn("Code: " + error.getResponse().getStatus());
             return error.getResponse();
@@ -91,6 +89,7 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
             return Response.status(Responses.NOT_FOUND).entity(error.getMessage()).build();
         } else {
             // internal error
+            LOG.warn("WebApplicationExceptionMapper " + error.getResponse().getStatus() + " " + error.getMessage(), error);
             Map<String, Object> model = Maps.newHashMap();
             model.put("exception", error);
             return Response.status(error.getResponse().getStatus()).entity(new Viewable("/errors/internal_error.ftl", model)).build();
