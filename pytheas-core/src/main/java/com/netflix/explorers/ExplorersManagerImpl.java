@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.common.collect.Lists;
+import com.netflix.explorers.context.RequestContext;
+import freemarker.cache.TemplateLoader;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -35,6 +39,8 @@ import com.google.inject.Singleton;
 import com.netflix.explorers.context.GlobalModelContext;
 import com.netflix.explorers.services.ExplorerServiceCachedFactorySupplier;
 import com.netflix.explorers.services.ExplorerServiceInstanceSupplier;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Singleton
 public class ExplorersManagerImpl implements ExplorerManager {
@@ -153,4 +159,15 @@ public class ExplorersManagerImpl implements ExplorerManager {
         explorers.remove(module);
     }
 
+    @Override
+    public List<TemplateLoader> getAdditionalTemplateLoaders() {
+        return Lists.newArrayList();
+    }
+
+    @Override
+    public RequestContext newRequestContext(HttpServletRequest httpServletRequest) {
+        RequestContext request = new RequestContext();
+        request.setHttpServletRequest(httpServletRequest);
+        return request;
+    }
 }

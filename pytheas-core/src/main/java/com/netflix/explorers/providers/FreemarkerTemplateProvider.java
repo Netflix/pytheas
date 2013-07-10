@@ -15,19 +15,21 @@
  */
 package com.netflix.explorers.providers;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLStreamHandler;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.netflix.explorers.Explorer;
+import com.netflix.explorers.ExplorerManager;
+import com.netflix.explorers.context.GlobalModelContext;
+import com.netflix.explorers.context.RequestContext;
+import com.netflix.explorers.model.EmptyExplorer;
+import com.sun.jersey.api.view.Viewable;
+import freemarker.cache.*;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateModelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -38,28 +40,18 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.netflix.explorers.model.EmptyExplorer;
-import com.sun.jersey.api.Responses;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-import com.google.common.collect.Maps;
-import com.netflix.explorers.Explorer;
-import com.netflix.explorers.ExplorerManager;
-import com.netflix.explorers.context.GlobalModelContext;
-import com.netflix.explorers.context.RequestContext;
-import com.sun.jersey.api.view.Viewable;
-
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.MultiTemplateLoader;
-import freemarker.cache.TemplateLoader;
-import freemarker.cache.URLTemplateLoader;
-import freemarker.cache.WebappTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateModelException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLStreamHandler;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Provider
@@ -170,8 +162,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             vars.put("it", model);
         }
 
-        RequestContext requestContext = new RequestContext();
-        requestContext.setHttpServletRequest(requestInvoker != null ? requestInvoker.get() : null);
+        RequestContext requestContext = manager.newRequestContext(requestInvoker != null ? requestInvoker.get() : null);
         vars.put("RequestContext",  requestContext);
         vars.put("Request",         requestInvoker != null ? requestInvoker.get() : null);
         
@@ -241,7 +232,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     			}
     	    	vars.put("nestedpage", resolvedPath);
     	    	
-                fmConfig.getTemplate("/layout/" + layout + "/main.ftl").process(vars, writer);
+                fmConfig.getTemplate(requestContext.getMainTemplatePath(layout)).process(vars, writer);
             }
     	
             if ( LOG.isDebugEnabled() )
@@ -254,35 +245,36 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             out.write( "</pre>".getBytes() );
         }
     }
-    
+
     @Context
     public void setServletContext( final ServletContext context )
     {
-        fmConfig.setTemplateLoader( 
-                new MultiTemplateLoader(
-                        new TemplateLoader[]{ 
-                                new WebappTemplateLoader( context, ROOT_PATH ), 
-                                new ClassTemplateLoader( getClass(), "/"),
-                                new URLTemplateLoader() {
-                                    @Override
-                                    protected URL getURL(String url) {
-                                        // Load from URL.
-                                        try {
-                                            String split[] = url.split(":", 2);
-                                            return new URL(null, url, urlHandlers.get(split[0]));
-                                        } catch (Exception x) {
-                                            LOG.error("Unable to handle url=" + url, x);
-                                            return null;
-                                        }
-                                    }
-                                    // Force reload each time.
-                                    public long getLastModified(Object templateSource) { 
-                                        // TOOO: keep a running time delay to allow for some caching.
-                                        return System.currentTimeMillis();
-                                    }
-                                }
-                    }) 
-                );
+        List<TemplateLoader> templateLoaders = Lists.newArrayList(
+                new WebappTemplateLoader( context, ROOT_PATH ),
+                new ClassTemplateLoader( getClass(), "/"),
+                new URLTemplateLoader() {
+                    @Override
+                    protected URL getURL(String url) {
+                        // Load from URL.
+                        try {
+                            String split[] = url.split(":", 2);
+                            return new URL(null, url, urlHandlers.get(split[0]));
+                        } catch (Exception x) {
+                            LOG.error("Unable to handle url=" + url, x);
+                            return null;
+                        }
+                    }
+                    // Force reload each time.
+                    public long getLastModified(Object templateSource) {
+                        // TOOO: keep a running time delay to allow for some caching.
+                        return System.currentTimeMillis();
+                    }
+                }
+        );
+        templateLoaders.addAll(manager.getAdditionalTemplateLoaders());
+
+        fmConfig.setTemplateLoader(new MultiTemplateLoader(
+                templateLoaders.toArray(new TemplateLoader[templateLoaders.size()])));
         
         fmConfig.setNumberFormat( "0" );
         fmConfig.setLocalizedLookup( false );
