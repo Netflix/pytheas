@@ -2,15 +2,18 @@ package com.netflix.explorers.karyon;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Module;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.explorers.annotations.ExplorerGuiceModule;
 import com.netflix.governator.guice.LifecycleInjectorBuilder;
 import com.netflix.governator.lifecycle.ClasspathScanner;
 import com.netflix.karyon.server.ServerBootstrap;
+import com.netflix.karyon.spi.PropertyNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -21,7 +24,8 @@ public class ExplorerKaryonServerBootstrap extends ServerBootstrap {
     protected void beforeInjectorCreation(@SuppressWarnings("unused") LifecycleInjectorBuilder builderToBeUsed) {
         List<Class<? extends Annotation>> explorerGuiceAnnotations = Lists.newArrayList();
         explorerGuiceAnnotations.add(ExplorerGuiceModule.class);
-        ClasspathScanner classpathScanner = new ClasspathScanner(getBasePackages(), explorerGuiceAnnotations);
+        Collection<String> basePackages = getBasePackages();
+        ClasspathScanner classpathScanner = new ClasspathScanner(basePackages, explorerGuiceAnnotations);
 
         List<Module> explorerGuiceModules = new ArrayList<Module>();
 
@@ -40,4 +44,20 @@ public class ExplorerKaryonServerBootstrap extends ServerBootstrap {
 
         builderToBeUsed.withAdditionalModules(explorerGuiceModules);
     }
+
+
+    @Override
+    protected Collection<String> getBasePackages() {
+        List<String> toReturn = new ArrayList<String>();
+        String basePackagesStr = ConfigurationManager.getConfigInstance().getString(PropertyNames.SERVER_BOOTSTRAP_BASE_PACKAGES_OVERRIDE);
+        String[] basePackages = basePackagesStr.split(";");
+
+        for (String basePackage : basePackages) {
+            toReturn.add(String.valueOf(basePackage));
+        }
+        return toReturn;
+    }
+
+
+
 }

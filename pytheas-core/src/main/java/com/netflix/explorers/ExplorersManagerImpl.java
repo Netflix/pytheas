@@ -15,32 +15,29 @@
  */
 package com.netflix.explorers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.netflix.config.ConfigurationManager;
+import com.netflix.explorers.context.GlobalModelContext;
 import com.netflix.explorers.context.RequestContext;
+import com.netflix.explorers.services.ExplorerServiceCachedFactorySupplier;
+import com.netflix.explorers.services.ExplorerServiceInstanceSupplier;
+import com.netflix.governator.lifecycle.ClasspathScanner;
+import com.netflix.karyon.spi.PropertyNames;
 import freemarker.cache.TemplateLoader;
-import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.netflix.explorers.context.GlobalModelContext;
-import com.netflix.explorers.services.ExplorerServiceCachedFactorySupplier;
-import com.netflix.explorers.services.ExplorerServiceInstanceSupplier;
-
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 @Singleton
 public class ExplorersManagerImpl implements ExplorerManager {
@@ -50,14 +47,41 @@ public class ExplorersManagerImpl implements ExplorerManager {
     private final ConcurrentMap<Class<?>, Supplier<?>> services = Maps.newConcurrentMap();
     private final GlobalModelContext globalContext;
 
+    private Injector injector;
+
     @Inject
-    public ExplorersManagerImpl(GlobalModelContext globalContext) {
+    public ExplorersManagerImpl(GlobalModelContext globalContext, Injector injector) {
         this.globalContext = globalContext;
+        this.injector = injector;
     }
 
-    @Override
-    public synchronized void initialize() {
 
+    @Override
+    @PostConstruct
+    public synchronized void initialize() {
+        List<Class<? extends Annotation>> explorerModuleAnnotations = Lists.newArrayList();
+        explorerModuleAnnotations.add(com.netflix.explorers.annotations.ExplorerModule.class);
+        Collection<String> basePackages = getBasePackages();
+        ClasspathScanner classpathScanner = new ClasspathScanner(basePackages, explorerModuleAnnotations);
+
+        // check if disabled - TODO
+
+        // register explorer instance
+        for (Class<?> explorerModuleClass : classpathScanner.getClasses()) {
+            registerExplorer(injector.<Explorer>getInstance((Class<Explorer>) explorerModuleClass));
+        }
+
+    }
+
+    private Collection<String> getBasePackages() {
+        List<String> toReturn = new ArrayList<String>();
+        String basePackagesStr = ConfigurationManager.getConfigInstance().getString(PropertyNames.SERVER_BOOTSTRAP_BASE_PACKAGES_OVERRIDE);
+        String[] basePackages = basePackagesStr.split(";");
+
+        for (String basePackage : basePackages) {
+            toReturn.add(String.valueOf(basePackage));
+        }
+        return toReturn;
     }
 
     @Override
@@ -99,9 +123,10 @@ public class ExplorersManagerImpl implements ExplorerManager {
     @Override
     public String getDefaultModule() {
         String defaultExplorer = globalContext.getDefaultExplorerName();
-        if (String.valueOf(defaultExplorer) == "") {
-            if (!explorers.isEmpty())
+        if (String.valueOf(defaultExplorer).equals("")) {
+            if (!explorers.isEmpty()) {
                 defaultExplorer = explorers.keySet().iterator().next();
+            }
         }
         return defaultExplorer;
     }

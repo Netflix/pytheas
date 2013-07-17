@@ -16,7 +16,6 @@
 package com.netflix.explorers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -32,7 +31,10 @@ import com.google.common.collect.Sets;
 import com.netflix.explorers.model.MenuItem;
 
 import javax.annotation.PostConstruct;
+import com.google.inject.Singleton;
 
+
+@Singleton
 public class AbstractExplorerModule implements Explorer {
     private static Logger LOG = LoggerFactory.getLogger(AbstractExplorerModule.class);
 
@@ -69,6 +71,7 @@ public class AbstractExplorerModule implements Explorer {
     }
 
     @Override
+    @PostConstruct
     public void initialize() {
         LOG.info("Initialize " + name);
 

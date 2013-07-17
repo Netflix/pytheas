@@ -18,7 +18,8 @@
                 sSuccess    : "Operation completed successfuly",
                 sSuccessDelay: 0,
                 fnSuccessRedirectUrl : function(data)   { return null;   },
-                sProcessing : "Processing..."
+                sProcessing : "Processing...",
+                payloadType : "string"
             };
             
             return this.each(function(){
@@ -62,6 +63,10 @@
                 $form.submit(function(event) {
                     event.preventDefault();
                     var data = settings.fnBefore(form2js($form[0], ".", false));
+
+                    if (settings.payloadType == 'string') {
+                        data = JSON.stringify(data);
+                    }
                     
                     $alert.removeClass("alert-error alert-success");
                     function sendRequest() {
@@ -70,7 +75,7 @@
                             $.ajax({
                                 type        : $form.attr('method') ? $form.attr('method') : "POST",
                                 url         : settings.fnAction($form.attr("action")), 
-                                data        : JSON.stringify(data),
+                                data        : data,
                                 dataType    : "json",
                                 contentType : "application/json; charset=utf-8",
                                 success     : function(json) {

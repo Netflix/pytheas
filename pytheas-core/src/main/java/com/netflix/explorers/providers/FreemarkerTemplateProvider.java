@@ -40,10 +40,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -219,12 +216,14 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             layout = (String) vars.get("layout");
         }
 
-        out.flush(); // send status + headers
 
-        final OutputStreamWriter writer = new OutputStreamWriter( out );
+
+
+        final StringWriter stringWriter = new StringWriter();
+
         try {
             if (requestContext.getIsAjaxRequest()) {
-    	        fmConfig.getTemplate(resolvedPath).process(vars, writer);
+    	        fmConfig.getTemplate(resolvedPath).process(vars, stringWriter);
             }
             else {
     	        if (layout == null) {
@@ -232,17 +231,20 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     			}
     	    	vars.put("nestedpage", resolvedPath);
     	    	
-                fmConfig.getTemplate(requestContext.getMainTemplatePath(layout)).process(vars, writer);
+                fmConfig.getTemplate(requestContext.getMainTemplatePath(layout)).process(vars, stringWriter);
             }
     	
-            if ( LOG.isDebugEnabled() )
+            if ( LOG.isDebugEnabled() ) {
                 LOG.debug( "OK: Resolved freemarker template" );
+            }
+
+            final OutputStreamWriter writer = new OutputStreamWriter( out );
+            writer.write(stringWriter.getBuffer().toString());
+            writer.flush();
         }
         catch ( Throwable t ) {
-            LOG.error( "Error processing freemarker template @ " + resolvedPath + ": " + t.getMessage(), t );
-            out.write( "<pre>".getBytes() );
-            t.printStackTrace( new PrintStream( out ) );
-            out.write( "</pre>".getBytes() );
+            LOG.error("Error processing freemarker template @ " + resolvedPath + ": " + t.getMessage(), t);
+            throw new WebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
