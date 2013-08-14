@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExplorerGuiceModule {
     String disableProperty() default "";
+    String jerseyPackagePath() default "";
 }
