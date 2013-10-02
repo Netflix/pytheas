@@ -67,7 +67,7 @@ public class AppConfigGlobalModelContext implements GlobalModelContext {
 
     @Inject
     public AppConfigGlobalModelContext(@Named("explorerAppName") String appName) {
-        final String propertiesFileName = appName + "-explorers-app.properties";
+        final String propertiesFileName = appName + "-explorers.properties";
 
         try {
             ConfigurationManager.loadPropertiesFromResources(propertiesFileName);
