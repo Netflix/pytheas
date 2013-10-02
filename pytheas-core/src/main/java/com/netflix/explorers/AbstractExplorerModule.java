@@ -33,8 +33,6 @@ import com.netflix.explorers.model.MenuItem;
 import javax.annotation.PostConstruct;
 import com.google.inject.Singleton;
 
-
-@Singleton
 public class AbstractExplorerModule implements Explorer {
     private static Logger LOG = LoggerFactory.getLogger(AbstractExplorerModule.class);
 

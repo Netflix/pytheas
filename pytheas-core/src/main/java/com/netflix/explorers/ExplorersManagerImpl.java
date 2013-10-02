@@ -47,28 +47,24 @@ public class ExplorersManagerImpl implements ExplorerManager {
     private final ConcurrentMap<Class<?>, Supplier<?>> services = Maps.newConcurrentMap();
     private final GlobalModelContext globalContext;
 
-    private Injector injector;
+
+    @Inject(optional = true)
+    private Set<Explorer> explorerModules;
 
     @Inject
-    public ExplorersManagerImpl(GlobalModelContext globalContext, Injector injector) {
+    public ExplorersManagerImpl(GlobalModelContext globalContext) {
         this.globalContext = globalContext;
-        this.injector = injector;
     }
 
 
     @Override
     @PostConstruct
     public synchronized void initialize() {
-        List<Class<? extends Annotation>> explorerModuleAnnotations = Lists.newArrayList();
-        explorerModuleAnnotations.add(com.netflix.explorers.annotations.ExplorerModule.class);
-        Collection<String> basePackages = getBasePackages();
-        ClasspathScanner classpathScanner = new ClasspathScanner(basePackages, explorerModuleAnnotations);
-
-        // check if disabled - TODO
-
         // register explorer instance
-        for (Class<?> explorerModuleClass : classpathScanner.getClasses()) {
-            registerExplorer(injector.<Explorer>getInstance((Class<Explorer>) explorerModuleClass));
+        if (explorerModules != null) {
+            for (Explorer explorer : explorerModules) {
+                registerExplorer(explorer);
+            }
         }
 
     }

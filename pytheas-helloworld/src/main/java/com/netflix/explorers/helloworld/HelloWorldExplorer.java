@@ -18,9 +18,7 @@ package com.netflix.explorers.helloworld;
 
 import com.google.inject.Singleton;
 import com.netflix.explorers.AbstractExplorerModule;
-import com.netflix.explorers.annotations.ExplorerModule;
 
-@ExplorerModule
 @Singleton
 public class HelloWorldExplorer extends AbstractExplorerModule {
 
