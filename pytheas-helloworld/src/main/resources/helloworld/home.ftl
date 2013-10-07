@@ -42,7 +42,7 @@
     <h1>Explorers</h1>
     <#list Explorers.explorers as explorer>
         <a class="explorer-container ui-corner-all"
-           href="${RequestContext.pathToRoot}${explorer.name}"
+           href="${RequestContext.pathToRoot}${explorer.name}/"
            rel="popover"
            data-content="<#if explorer.description?exists>${explorer.description}<#else><em>ERROR</em></#if>">
             <p><#if explorer.title?exists>${explorer.title}<#else><em>ERROR : ${explorer.name}</em></#if><#if explorer.isSecure?exists && explorer.isSecure> <i class="icon-lock"> </i> </#if></p>

@@ -14,7 +14,7 @@ $(document).ready(function() {
             { "sTitle": "Country",     "mDataProp" : "name", "sWidth" : "90%", "sDefaultContent": "-" }
         ],
         "sAjaxDataProp": "countries",
-        "sAjaxSource": "helloworld/list",
+        "sAjaxSource": "list",
         "bDestroy"       : true,
         "bAutoWidth"     : false,
         "bStateSave"     : true,
