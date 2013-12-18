@@ -1,49 +1,28 @@
-/**
- * Copyright 2013 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.netflix.explorers.providers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.Map;
+import com.google.inject.Singleton;
+import com.sun.jersey.api.core.HttpContext;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Variant;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.List;
 
-import com.google.inject.Singleton;
-import com.sun.jersey.api.Responses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.collect.Maps;
-import com.sun.jersey.api.core.HttpContext;
-import com.sun.jersey.api.view.Viewable;
 
 @Singleton
 @Provider
 public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplicationException> {
-    private static final Logger LOG = LoggerFactory.getLogger(GenericExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebApplicationExceptionMapper.class);
     private static List<Variant> supportedMediaTypes = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, MediaType.TEXT_HTML_TYPE).add().build();
     
     @Context 
@@ -82,17 +61,19 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
                 // TODO:
             }
         }
-        
 
-        final int statusCode = error.getResponse().getStatus();
-        if (statusCode == Responses.NOT_FOUND) {
-            return Response.status(Responses.NOT_FOUND).entity(error.getMessage()).build();
-        } else {
-            // internal error
-            LOG.warn("WebApplicationExceptionMapper " + error.getResponse().getStatus() + " " + error.getMessage(), error);
-            Map<String, Object> model = Maps.newHashMap();
-            model.put("exception", error);
-            return Response.status(error.getResponse().getStatus()).entity(new Viewable("/errors/internal_error.ftl", model)).build();
+        // do not log 404
+        if (! is404(error)) {
+            LOG.warn(String.format("WebApplicationExceptionMapper status='%s' message='%s' url='%s'",
+                    error.getResponse().getStatus(), error.getMessage(), context.getRequest().getPath()),
+                    error);
         }
+
+
+        return Response.status(error.getResponse().getStatus()).build();
+    }
+
+    private boolean is404(WebApplicationException error) {
+        return error.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode();
     }
 }

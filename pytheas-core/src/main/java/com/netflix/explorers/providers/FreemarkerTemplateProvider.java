@@ -50,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 @Singleton
 @Provider
 public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
@@ -65,46 +67,41 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     private static final String DEFAULT_LAYOUT = "main";
     
     private Configuration fmConfig = new Configuration();
+    private boolean servletMode = false;
     
-    private ExplorerManager manager;
-
+    @Inject(optional=true) ExplorerManager manager;
 
     @Context 
     private ThreadLocal<HttpServletRequest> requestInvoker;
 
 
-    @Inject
-    public FreemarkerTemplateProvider(ExplorerManager manager) {
-        this.manager = manager;
-
-        if (this.manager == null) {
-            throw new RuntimeException("Manager is null");
-        }
-
-        LOG.info(this.manager.toString());
-
-        commonConstruct();
-    }
-    
-    private void commonConstruct() {
-        // Just look for files in the class path
-        fmConfig.setTemplateLoader( 
-                new MultiTemplateLoader(
-                        new TemplateLoader[]{ 
-                                new ClassTemplateLoader( getClass(), "/")}) );
+    @PostConstruct
+    public void commonConstruct() {
+    	if (!servletMode) {
+	        // Just look for files in the class path
+	    	TemplateLoader loader = fmConfig.getTemplateLoader();
+	        fmConfig.setTemplateLoader( 
+	                new MultiTemplateLoader(
+	                        new TemplateLoader[]{ 
+	                                new ClassTemplateLoader( getClass(), "/")}) );
+    	}
         fmConfig.setNumberFormat( "0" );
         fmConfig.setLocalizedLookup( false );
         fmConfig.setTemplateUpdateDelay(0);
         
         try {
-            fmConfig.setSharedVariable("Global",    manager.getGlobalModel());
-            fmConfig.setSharedVariable("Explorers", manager);
+            if (manager != null) {
+                fmConfig.setSharedVariable("Global",    manager.getGlobalModel());
+                fmConfig.setSharedVariable("Explorers", manager);
+            }
+
             fmConfig.setSharedVariable("toJson",    new ToJsonMethod());
         }
         catch (TemplateModelException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public long getSize(Viewable t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -159,7 +156,8 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
             vars.put("it", model);
         }
 
-        RequestContext requestContext = manager.newRequestContext(requestInvoker != null ? requestInvoker.get() : null);
+        RequestContext requestContext = new RequestContext();
+        requestContext.setHttpServletRequest(requestInvoker != null ? requestInvoker.get() : null);
         vars.put("RequestContext",  requestContext);
         vars.put("Request",         requestInvoker != null ? requestInvoker.get() : null);
         
@@ -183,9 +181,10 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
         // The following are here for backward compatibility and should be deprecated as soon as possible
         Map<String, Object> global = Maps.newHashMap();
         
-        GlobalModelContext globalModel = manager.getGlobalModel();
-
-        global.put("sysenv",    globalModel.getEnvironment());      // TODO: DEPRECATE
+        if (manager != null) {
+            GlobalModelContext globalModel = manager.getGlobalModel();
+            global.put("sysenv",    globalModel.getEnvironment());      // TODO: DEPRECATE
+        }
         vars.put("global",      global);                            // TODO: DEPRECATE
         vars.put("pathToRoot",  requestContext.getPathToRoot());    // TODO: DEPRECATE
         
@@ -231,7 +230,7 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     			}
     	    	vars.put("nestedpage", resolvedPath);
     	    	
-                fmConfig.getTemplate(requestContext.getMainTemplatePath(layout)).process(vars, stringWriter);
+                fmConfig.getTemplate("/layout/" + layout + "/main.ftl").process(vars, stringWriter);
             }
     	
             if ( LOG.isDebugEnabled() ) {
@@ -251,47 +250,35 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     @Context
     public void setServletContext( final ServletContext context )
     {
-        List<TemplateLoader> templateLoaders = Lists.newArrayList(
-                new WebappTemplateLoader( context, ROOT_PATH ),
-                new ClassTemplateLoader( getClass(), "/"),
-                new URLTemplateLoader() {
-                    @Override
-                    protected URL getURL(String url) {
-                        // Load from URL.
-                        try {
-                            String split[] = url.split(":", 2);
-                            return new URL(null, url, urlHandlers.get(split[0]));
-                        } catch (Exception x) {
-                            LOG.error("Unable to handle url=" + url, x);
-                            return null;
-                        }
-                    }
-                    // Force reload each time.
-                    public long getLastModified(Object templateSource) {
-                        // TOOO: keep a running time delay to allow for some caching.
-                        return System.currentTimeMillis();
-                    }
-                }
-        );
-        templateLoaders.addAll(manager.getAdditionalTemplateLoaders());
-
-        fmConfig.setTemplateLoader(new MultiTemplateLoader(
-                templateLoaders.toArray(new TemplateLoader[templateLoaders.size()])));
+    	// Suppress the templateLoader override in commonConstruct, which is executed after this method in Guice.
+    	servletMode = true;
+        fmConfig.setTemplateLoader( 
+                new MultiTemplateLoader(
+                        new TemplateLoader[]{ 
+                                new WebappTemplateLoader( context, ROOT_PATH ), 
+                                new ClassTemplateLoader( getClass(), "/"),
+                                new URLTemplateLoader() {
+                                    @Override
+                                    protected URL getURL(String url) {
+                                        // Load from URL.
+                                        try {
+                                            String split[] = url.split(":", 2);
+                                            return new URL(null, url, urlHandlers.get(split[0]));
+                                        } catch (Exception x) {
+                                            LOG.error("Unable to handle url=" + url, x);
+                                            return null;
+                                        }
+                                    }
+                                    // Force reload each time.
+                                    public long getLastModified(Object templateSource) { 
+                                        // TOOO: keep a running time delay to allow for some caching.
+                                        return System.currentTimeMillis();
+                                    }
+                                }
+                    }) 
+                );
         
-        fmConfig.setNumberFormat( "0" );
-        fmConfig.setLocalizedLookup( false );
-        fmConfig.setTemplateUpdateDelay(0);
-        
-        LOG.info(manager.toString());
-        try {
-            fmConfig.setSharedVariable("Global",    manager.getGlobalModel());
-            fmConfig.setSharedVariable("Explorers", manager);
-            fmConfig.setSharedVariable("toJson",    new ToJsonMethod());
-            fmConfig.addAutoInclude("/layout/bootstrap/form.ftl");
-        }
-        catch (TemplateModelException e) {
-            throw new RuntimeException(e);
-        }
+        fmConfig.addAutoInclude("/layout/bootstrap/form.ftl");
     }
     
 }

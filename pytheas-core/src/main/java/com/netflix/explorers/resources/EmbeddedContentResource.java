@@ -1,18 +1,3 @@
-/**
- * Copyright 2013 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.netflix.explorers.resources;
 
 import java.io.ByteArrayOutputStream;
@@ -29,7 +14,9 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.netflix.config.ConfigurationManager;
+import com.netflix.config.DynamicBooleanProperty;
+import com.netflix.config.DynamicIntProperty;
+import com.netflix.config.DynamicPropertyFactory;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -56,9 +43,9 @@ public class EmbeddedContentResource {
 	           .put("json", MediaType.APPLICATION_JSON)
                .put("swf", "application/x-shockwave-flash")
 	           .build();
-	
-    private final static int MAX_AGE = ConfigurationManager.getConfigInstance().getInt("netflix.explorers.resources.cache.maxAge", 3600);
-    private final static boolean CACHE_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("netflix.explorers.resources.cache.enabled", true);
+
+    private static final DynamicBooleanProperty CACHE_ENABLED = DynamicPropertyFactory.getInstance().getBooleanProperty("netflix.explorers.resources.cache.enabled", true);
+    private static final DynamicIntProperty MAX_AGE = DynamicPropertyFactory.getInstance().getIntProperty("netflix.explorers.resources.cache.maxAge", 3600);
 
 	@GET
 	@Path("/{subResources:.*}")
@@ -85,9 +72,9 @@ public class EmbeddedContentResource {
 		if (buffer == null)
 			throw new NotFoundException();
 		else  {
-			if (CACHE_ENABLED) {
+			if (CACHE_ENABLED.get()) {
 				CacheControl cc = new CacheControl();
-				cc.setMaxAge(MAX_AGE);
+				cc.setMaxAge(MAX_AGE.get());
 				cc.setNoCache(false);
 				return Response
 				    .ok(buffer, mediaType)

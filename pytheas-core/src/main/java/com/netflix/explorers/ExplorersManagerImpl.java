@@ -16,26 +16,20 @@
 package com.netflix.explorers;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.explorers.context.GlobalModelContext;
-import com.netflix.explorers.context.RequestContext;
 import com.netflix.explorers.services.ExplorerServiceCachedFactorySupplier;
 import com.netflix.explorers.services.ExplorerServiceInstanceSupplier;
-import com.netflix.governator.lifecycle.ClasspathScanner;
+import com.netflix.explorers.sso.SsoAuthProviderWrapper;
 import com.netflix.karyon.spi.PropertyNames;
-import freemarker.cache.TemplateLoader;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
@@ -50,6 +44,9 @@ public class ExplorersManagerImpl implements ExplorerManager {
 
     @Inject(optional = true)
     private Set<Explorer> explorerModules;
+    
+    @Inject(optional=true) 
+    private SsoAuthProviderWrapper autoProvider;
 
     @Inject
     public ExplorersManagerImpl(GlobalModelContext globalContext) {
@@ -165,7 +162,7 @@ public class ExplorersManagerImpl implements ExplorerManager {
 
     @Override
     public boolean getHasAuthProvider() {
-        return false;
+        return autoProvider != null && autoProvider.hasSsoAuthProvider();
     }
 
     @Override
@@ -178,17 +175,5 @@ public class ExplorersManagerImpl implements ExplorerManager {
     public void unregisterExplorer(Explorer module) {
         LOG.info("Removing explorer module " + module.getName());
         explorers.remove(module);
-    }
-
-    @Override
-    public List<TemplateLoader> getAdditionalTemplateLoaders() {
-        return Lists.newArrayList();
-    }
-
-    @Override
-    public RequestContext newRequestContext(HttpServletRequest httpServletRequest) {
-        RequestContext request = new RequestContext();
-        request.setHttpServletRequest(httpServletRequest);
-        return request;
     }
 }
