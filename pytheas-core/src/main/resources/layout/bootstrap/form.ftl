@@ -1,5 +1,5 @@
 <#macro form id action method="post" orientation="horizontal">
-<form class="form-${orientation}" id="${id}" method="${method}" action="${action}">
+<form class="form-${orientation}" id="${id}" method="${method}" action="${action}" xmlns="http://www.w3.org/1999/html">
     <#nested/>
 </form>
 </#macro>
@@ -76,9 +76,11 @@
 <#macro secondary>
 </#macro>
 
-<#macro text label name id="" value="" required=false class="" readonly=false>
+<#macro text label name id="" value="" required=false class="" readonly=false hasHelp=false>
 <div class="control-group ${name?replace('.', '-')}_wrapper">
-    <label class="control-label" <#if id!="">for="${id}"</#if> <#if name!="">name="${name}"</#if>>${label}</label>
+    <label class="control-label" <#if id!="">for="${id}"</#if> <#if name!="">name="${name}"</#if>>${label}
+        <#if required==true><sup class="required-indicator">*</sup></#if>
+    </label>
     <div class="controls">
         <input type="text" 
                class="input-xlarge ${class}" 
@@ -87,42 +89,59 @@
                <#if value!="">value="${value}"</#if> 
                <#if readonly==true> readonly="readonly"</#if>>
         </input>
-        <#if required==true><span class="required-indicator">*</span></#if><#nested/>
+        <#if hasHelp==true && id != "">
+            <a id="${id}-help" href="#" class="icon-question-sign"></a>
+        </#if>
+        <#nested/>
     </div>
 </div>
 </#macro>
 
-<#macro textarea label name id="" required=false>
+<#macro textarea label name id="" required=false hasHelp=false>
 <div class="control-group ${name?replace('.', '-')}_wrapper">
-    <label class="control-label" <#if id!="">for="${id}"</#if> <#if name!="">name="${name}"</#if>>${label}</label>
-    <div class="controls"><textarea <#if id!="">id="${id}" </#if> <#if name!="">name="${name}"</#if>><#nested/></textarea><#if required==true><span class="required-indicator">*</span></#if>
+    <label class="control-label" <#if id!="">for="${id}"</#if> <#if name!="">name="${name}"</#if>>${label}
+        <#if required==true><sup class="required-indicator">*</sup></#if>
+    </label>
+    <div class="controls"><textarea <#if id!="">id="${id}" </#if> <#if name!="">name="${name}"</#if>><#nested/></textarea>
+        <#if hasHelp==true && id != "">
+            <a id="${id}-help" href="#" class="icon-question-sign"></a>
+        </#if>
     </div>
 </div>
 </#macro>
 
-<#macro select label name id="">
+<#macro select label name id="" required=false hasHelp=false>
 <div class="control-group ${name?replace('.', '-')}_wrapper">
-    <label class="control-label" for="${name}">${label}</label>
+    <label class="control-label" for="${name}">${label}
+        <#if required==true><sup class="required-indicator">*</sup></#if>
+    </label>
     <div class="controls">
         <select <#if id!="">id="${id}" </#if>name="${name}">
             <#nested/>
         </select>
+        <#if hasHelp==true && id != "">
+            <a id="${id}-help" href="#" class="icon-question-sign"></a>
+        </#if>
     </div>
 </div>
 </#macro> 
 
-<#macro checkbox label name id="" checked=true value=true>
+<#macro checkbox label name id="" required=false checked=true value=true>
 <div class="control-group ${name?replace('.', '-')}_wrapper">
-    <label class="control-label" for="${name}">${label}</label>
+    <label class="control-label" for="${name}">${label}
+        <#if required==true><sup class="required-indicator">*</sup></#if>
+    </label>
     <div class="controls">
         <input type="checkbox" <#if id!="">id="${id}" </#if>name="${name}" value="${value?string}" checked="${checked?string}"></input>
     </div>
 </div>
 </#macro>
 
-<#macro radio_group label id="">
+<#macro radio_group label id="" required=false>
 <div class="control-group <#if id!="">${id}_wrapper</#if>">
-    <label class="control-label" >${label}</label>
+    <label class="control-label" >${label}
+        <#if required==true><sup class="required-indicator">*</sup></#if>
+    </label>
     <div class="controls">
         <div class="radio-group-horizontal ui-helper-clearfix" id="${id}">
             <#nested/>

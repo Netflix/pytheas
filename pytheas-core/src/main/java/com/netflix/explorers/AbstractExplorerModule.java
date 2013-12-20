@@ -226,8 +226,8 @@ public class AbstractExplorerModule implements Explorer {
         // get value from netflixConfiguration as it can be overridden for debugging / testing applications
         String propName = "com.netflix.explorers." + name + "." + "secure";
         try {
-            final DynamicBooleanProperty booleanProperty = DynamicPropertyFactory.getInstance().getBooleanProperty(propName, isSecure);
-            isSecure = booleanProperty.get();
+            final DynamicBooleanProperty isSecureDynamicProperty = DynamicPropertyFactory.getInstance().getBooleanProperty(propName, isSecure);
+            isSecure = isSecureDynamicProperty.get();
             return isSecure;
         } catch (Exception ex) {
             return isSecure;

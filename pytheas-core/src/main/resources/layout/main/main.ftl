@@ -6,8 +6,6 @@
 
 <#macro toolbar>
 </#macro>
-<#macro head>
-</#macro>
 
 <#macro breadcrumbs>
 <div><span id="ca-breadcrumbs"></span></div>
@@ -33,12 +31,6 @@ Missing body macro for ${nestedpage}
 <#include "${nestedpage}">
 
 <html>
-  <head>
-    <@head/>
-    <#if basehref?exists>
-        <base href="${basehref}">
-    </#if>
-  </head>
   <body>
     <div class="outer-north">
         <#include "header.ftl"/>
