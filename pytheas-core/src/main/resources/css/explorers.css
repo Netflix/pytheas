@@ -227,7 +227,7 @@ table td {
  ****************************************************************************/ 
 .portlet { margin: 5px; margin-bottom: 20px; }
 .portlet-header { padding-bottom: 0px; padding: 6px; }
-.portlet-content { padding: 5px; border: 1px solid #aaa; background: #eeeeef; };
+.portlet-content { padding: 5px; border: 1px solid #aaa; background: #eeeeef; }
 /* 
 .portlet-toolbar { padding: 0em 0em 0.4em 0.4em; margin-left: -0.4em;}
 .portlet-header .ui-icon { float: right; }
@@ -719,4 +719,9 @@ table.fixed {
     table-layout:fixed
 }
 
-</style>
+.required-indicator {
+    color: red;
+    font-size: 11px;
+    font-weight: bolder;
+}
+

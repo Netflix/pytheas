@@ -1,24 +1,10 @@
-/**
- * Copyright 2013 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.netflix.explorers.resources;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.netflix.config.ConfigurationManager;
+import com.netflix.config.DynamicIntProperty;
+import com.netflix.config.DynamicPropertyFactory;
 import com.netflix.explorers.ExplorerManager;
 import com.netflix.explorers.context.RequestContext;
 import com.netflix.explorers.providers.SharedFreemarker;
@@ -47,16 +33,10 @@ public class MinifiedContentResource {
                .put("js", "text/javascript")
                .put("css", "text/css")
                .build();
-    
-    private final static int MAX_AGE = ConfigurationManager.getConfigInstance().getInt("netflix.explorers.resources.cache.maxAge", 3600);
 
+    private static final DynamicIntProperty MAX_AGE = DynamicPropertyFactory.getInstance().getIntProperty("netflix.explorers.resources.cache.maxAge", 3600);
 
-    private ExplorerManager manager;
-
-    @Inject
-    public MinifiedContentResource(ExplorerManager manager) {
-        this.manager = manager;
-    }
+    @Inject(optional=true) ExplorerManager manager;
 
     @GET
     @Path("/{subResources:.*}")
@@ -67,14 +47,14 @@ public class MinifiedContentResource {
         String mediaType = EXT_TO_MEDIATYPE.get(ext);
         
         final Map<String,Object> vars = new HashMap<String, Object>();
-        RequestContext requestContext = manager.newRequestContext(null);
+        RequestContext requestContext = new RequestContext();
         vars.put("RequestContext",  requestContext);
         vars.put("Global",          manager.getGlobalModel());
         vars.put("Explorers",       manager);
         
         try {
             CacheControl cc = new CacheControl();
-            cc.setMaxAge(MAX_AGE);
+            cc.setMaxAge(MAX_AGE.get());
             cc.setNoCache(false);
             return Response
                 .ok(SharedFreemarker.getInstance().render(subResources + ".ftl", vars), mediaType)

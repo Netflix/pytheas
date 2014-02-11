@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.netflix.explorers.resources;
 import java.util.List;
 
 import javax.ws.rs.Consumes;

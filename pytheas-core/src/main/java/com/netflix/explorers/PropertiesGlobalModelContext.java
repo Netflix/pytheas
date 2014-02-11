@@ -57,7 +57,7 @@ public class PropertiesGlobalModelContext implements GlobalModelContext {
     private final String defaultExplorerName;
     private final String dataCenter;
     
-    private final Map<String, CrossLink> links = Maps.newHashMap();
+    private final Map<String, CrossLink> links = Maps.newTreeMap();
     private final Properties properties;
     
     public PropertiesGlobalModelContext(Properties props) {
@@ -89,7 +89,6 @@ public class PropertiesGlobalModelContext implements GlobalModelContext {
             }
         }
         catch (Exception e) {
-            LOG.error("Exception ", e);
             throw new RuntimeException(e);
         }
     }

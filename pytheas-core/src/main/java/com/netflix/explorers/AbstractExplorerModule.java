@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.netflix.config.ConfigurationManager;
+import com.netflix.config.DynamicPropertyFactory;
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ import com.netflix.explorers.model.MenuItem;
 
 import javax.annotation.PostConstruct;
 import com.google.inject.Singleton;
+
+import com.netflix.config.DynamicBooleanProperty;
 
 public class AbstractExplorerModule implements Explorer {
     private static Logger LOG = LoggerFactory.getLogger(AbstractExplorerModule.class);
@@ -220,9 +223,18 @@ public class AbstractExplorerModule implements Explorer {
 
     @Override
     public boolean getIsSecure() {
-        return isSecure;
+        // get value from netflixConfiguration as it can be overridden for debugging / testing applications
+        String propName = "com.netflix.explorers." + name + "." + "secure";
+        try {
+            final DynamicBooleanProperty isSecureDynamicProperty = DynamicPropertyFactory.getInstance().getBooleanProperty(propName, isSecure);
+            isSecure = isSecureDynamicProperty.get();
+            return isSecure;
+        } catch (Exception ex) {
+            return isSecure;
+        }
     }
     
+
     @Override
     public Properties getProperties() {
         return null;

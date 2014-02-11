@@ -17,12 +17,19 @@ $(document).ready(function() {
     }, 1000);
 	
     $('#nf-modules').change(function() {
-    	var moduleName = $('#nf-modules').val();
-    	window.location = "${RequestContext.pathToRoot}" + moduleName;
+    	var url = $('#nf-modules').val();
+    	if (url.startsWith("http://")) {
+    		window.location = url;
+    	}
+    	else {
+    		window.location = "${RequestContext.pathToRoot}" + url;
+    	}
     });
 
     $('#nf-regions').change(function() {
-    	window.location = $("#nf-regions option:selected").attr("href");
+        var regionUrlPrefix = $("#nf-regions option:selected").attr("href");
+        var pathName = document.location.pathname;
+    	window.location = regionUrlPrefix + pathName;
     });
     
     $('#nf-regions').val("${Global.currentRegion}.${Global.environmentName}");
@@ -30,7 +37,7 @@ $(document).ready(function() {
     $('#layoutheader-main h1').click(function() {
     	window.location = <#if RequestContext.contextPath=="">"/"<#else>"${RequestContext.contextPath}"</#if>;
     });
-
+    
     // fixes Bootstrap modal dialog bug per http://jsfiddle.net/ATeaH/8/
     $('.modal').appendTo($('body'));
 
@@ -51,5 +58,10 @@ $(document).ready(function() {
             break;
         }
     }
+
+    <#if Explorer.cmcEnabled>
+        // init cmc plugin
+        $('#cmc').cmc();
+    </#if>
 
 });

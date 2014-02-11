@@ -31,8 +31,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-//@Produces({EventChannel.SERVER_SENT_EVENTS})
-//@Provider
+@Produces({EventChannel.SERVER_SENT_EVENTS})
+@Provider
 public class EventChannelWriter implements MessageBodyWriter<EventChannel> {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventChannel.class);

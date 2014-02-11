@@ -15,11 +15,18 @@
  */
 package com.netflix.explorers.jersey;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.inject.Provider;
+import com.netflix.explorers.AbstractExplorerModule;
+import com.netflix.explorers.ExplorerManager;
+import com.netflix.explorers.rest.RestKey;
+import com.netflix.explorers.rest.RestResource;
+import com.sun.jersey.api.NotFoundException;
+import com.sun.jersey.api.core.ResourceContext;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -27,22 +34,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.inject.Provider;
-import com.netflix.explorers.AbstractExplorerModule;
-import com.netflix.explorers.ExplorerManager;
-import com.netflix.explorers.annotations.Controller;
-import com.netflix.explorers.context.RequestContext;
-import com.netflix.explorers.rest.RestKey;
-import com.netflix.explorers.rest.RestResource;
-import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.core.ResourceContext;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 /**
  * Higher level explorer module that auto creates jersey path bindings for
  * entities managed by an explorer. The ExplorerResource will be registered with
@@ -152,8 +148,7 @@ public class ExplorerResource extends AbstractExplorerModule {
     public Response showHome() throws Exception {
         if (defaultController != null) {
             try {
-                RequestContext ctx = new RequestContext(requestInvoker.get());
-                String redirect = StringUtils.join(Arrays.asList(ctx.getPathInfo(), defaultController), "/");
+                String redirect = StringUtils.join(Arrays.asList(requestInvoker.get().getRequestURI().toString(), defaultController), "/");
                 return Response.temporaryRedirect(new URI(redirect)).build();
             } catch (URISyntaxException e) {
                 return Response.serverError().build();

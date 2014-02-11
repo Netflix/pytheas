@@ -63,7 +63,8 @@ public class ExplorerContextInjectable
 
     @Override
     public Explorer getValue(HttpContext c) {
-        RequestContext request = manager.newRequestContext(requestInvoker.get());
+        RequestContext request = new RequestContext();
+        request.setHttpServletRequest(requestInvoker.get());
         try {
             return manager.getExplorer(request.getExplorerName());
         }

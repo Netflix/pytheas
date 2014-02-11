@@ -64,7 +64,7 @@
                     <#if Explorer?exists && Explorer.name?length!=0>
                         <select id="nf-modules" class="">
                         <#list Explorers.explorers as m>
-                            <option value="${m.name}" <#if m.isSecure>secure="true"</#if>><#if m.title?exists>${m.title}<#else>${m.name} (missing title)</#if></option>
+                            <option <#if Explorer.name==m.name>selected </#if>value="${m.home}" <#if m.isSecure>secure="true"</#if>><#if m.title?exists>${m.title}<#else>${m.name} (missing title)</#if></option>
                         </#list>
                         </select>
                     </#if>
