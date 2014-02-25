@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Date;
+import java.net.URLConnection;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,25 +25,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.NotFoundException;
 
 @Path("/res")
 public class EmbeddedContentResource {
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedContentResource.class);
-
-	private static final ImmutableMap<String, String> EXT_TO_MEDIATYPE =
-	       new ImmutableMap.Builder<String, String>()
-	           .put("js",  "text/javascript")
-	           .put("png", "image/png")
-	           .put("gif", "image/gif")
-	           .put("css", "text/css")
-	           .put("jpg", "image/jpeg")
-	           .put("jpeg", "image/jpeg")
-	           .put("csv", "text/csv")
-	           .put("ico", "image/x-icon")
-	           .put("json", MediaType.APPLICATION_JSON)
-               .put("swf", "application/x-shockwave-flash")
-	           .build();
+    private static final ImmutableMap<String, String> EXT_TO_MEDIATYPE =
+        new ImmutableMap.Builder<String, String>()
+        .put("js",  "text/javascript")
+        .put("png", "image/png")
+        .put("gif", "image/gif")
+        .put("css", "text/css")
+        .put("jpg", "image/jpeg")
+        .put("jpeg", "image/jpeg")
+        .put("csv", "text/csv")
+        .put("map", "application/x-navimap")
+        .put("ico", "image/x-icon")
+        .put("json", MediaType.APPLICATION_JSON)
+        .put("swf", "application/x-shockwave-flash")
+        .build();
 
     private static final DynamicBooleanProperty CACHE_ENABLED = DynamicPropertyFactory.getInstance().getBooleanProperty("netflix.explorers.resources.cache.enabled", true);
     private static final DynamicIntProperty MAX_AGE = DynamicPropertyFactory.getInstance().getIntProperty("netflix.explorers.resources.cache.maxAge", 3600);
@@ -54,20 +56,21 @@ public class EmbeddedContentResource {
 		
 		String ext = StringUtils.substringAfterLast(subResources, ".");
 		String mediaType = EXT_TO_MEDIATYPE.get(ext);
-        byte[] buffer = null;
-		if (mediaType != null) {
-			InputStream is = getClass().getResourceAsStream("/" + subResources);
-			if (is == null) {
-				throw new WebApplicationException(404);
-			}
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			try {
-				IOUtils.copy(is, os);
-				buffer = os.toByteArray();
-			} catch (IOException e) {
-				LOG.warn(e.getMessage());
-			}
-		}
+                byte[] buffer = null;
+
+                try {
+                    if (! CACHE_ENABLED.get()) {
+                        final URLConnection urlConnection = getClass().getResource("/" + subResources).openConnection();
+                        if (urlConnection != null) {
+                            urlConnection.setUseCaches(false);
+                            buffer = ByteStreams.toByteArray(urlConnection.getInputStream());
+                        }
+                    } else {
+                        buffer = ByteStreams.toByteArray(this.getClass().getResourceAsStream("/" + subResources));
+                    }
+                } catch (IOException e) {
+                    throw new WebApplicationException(404);
+                }
         
 		if (buffer == null)
 			throw new NotFoundException();
