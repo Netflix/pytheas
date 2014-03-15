@@ -57,6 +57,8 @@ project(':pytheas-core') {
         compile 'com.github.stephenc.high-scale-lib:high-scale-lib:1.1.2'
         compile 'commons-beanutils:commons-beanutils:1.8.2'
         compile 'commons-io:commons-io:1.4'
+
+        runtime 'com.sun.jersey:jersey-servlet:1.11'
     }
 
 }
