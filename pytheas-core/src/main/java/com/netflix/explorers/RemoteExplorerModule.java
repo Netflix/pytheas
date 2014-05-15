@@ -102,8 +102,7 @@ public class RemoteExplorerModule implements Explorer {
 
     @Override
     public String toString() {
-        return "RemoteExplorerModule [manager=" + manager + ", entity="
-                + entity + "]";
+        return "RemoteExplorerModule entity = " + entity;
     }
 
 }
