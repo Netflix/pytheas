@@ -28,10 +28,11 @@ subprojects {
         compile 'javax.ws.rs:jsr311-api:1.1.1'
         compile 'com.sun.jersey.contribs:jersey-guice:1.9.1'
         compile 'com.sun.jersey:jersey-core:1.11'
+        compile 'com.sun.jersey:jersey-json:1.11'
+        compile 'com.sun.jersey:jersey-servlet:1.11'
+
         compile 'org.slf4j:slf4j-api:1.7.0'
-        compile('com.netflix.karyon:karyon-core:1.0.22') {
-          exclude group: 'com.sun.jersey', module: 'jersey-bundle'
-        }
+        compile 'com.netflix.karyon:karyon-core:1.0.22'
         runtime 'org.slf4j:slf4j-simple:1.7.0'
         testCompile 'junit:junit:4.10'
         testCompile 'org.mockito:mockito-core:1.8.5'
@@ -70,9 +71,7 @@ project(':pytheas-helloworld') {
 
     dependencies {
         compile project(':pytheas-core')
-        compile('com.netflix.karyon:karyon-extensions:1.0.22') {
-          exclude group: 'com.sun.jersey', module: 'jersey-bundle'
-        }
+        compile 'com.netflix.karyon:karyon-extensions:1.0.22'
         testCompile 'org.eclipse.jetty:jetty-server:7.6.7.v20120910'
         testCompile 'org.eclipse.jetty:jetty-servlet:7.6.7.v20120910'
     }
