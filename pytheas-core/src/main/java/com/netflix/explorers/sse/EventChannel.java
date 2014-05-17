@@ -26,7 +26,6 @@ import com.netflix.explorers.resources.EmbeddedContentResource;
 import org.cliffc.high_scale_lib.NonBlockingHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.util.LocaleServiceProviderPool;
 
 public class EventChannel implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(EventChannel.class);
