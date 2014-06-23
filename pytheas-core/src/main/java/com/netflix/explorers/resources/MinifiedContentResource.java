@@ -49,8 +49,10 @@ public class MinifiedContentResource {
         final Map<String,Object> vars = new HashMap<String, Object>();
         RequestContext requestContext = new RequestContext();
         vars.put("RequestContext",  requestContext);
-        vars.put("Global",          manager.getGlobalModel());
-        vars.put("Explorers",       manager);
+        if (manager != null) {
+            vars.put("Global",          manager.getGlobalModel());
+            vars.put("Explorers",       manager);
+        }
         
         try {
             CacheControl cc = new CacheControl();
