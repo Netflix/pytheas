@@ -74,6 +74,13 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     @Context 
     private ThreadLocal<HttpServletRequest> requestInvoker;
 
+    public void setExplorerManager(ExplorerManager manager) {
+        this.manager = manager;
+    }
+
+    public void setRequestInvoker(ThreadLocal<HttpServletRequest> requestInvoker) {
+        this.requestInvoker = requestInvoker;
+    }
 
     @PostConstruct
     public void commonConstruct() {
