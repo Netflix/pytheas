@@ -33,7 +33,7 @@ import com.netflix.explorers.model.ExplorerInfoEntity;
 import com.netflix.explorers.model.ExplorerInfoListEntity;
 import com.netflix.explorers.model.MapEntity;
 
-@Path("admin")
+@Path("pytheas-admin")
 @Produces( MediaType.APPLICATION_JSON )
 @Consumes( MediaType.APPLICATION_JSON )
 public class ExplorerAdminResource {
