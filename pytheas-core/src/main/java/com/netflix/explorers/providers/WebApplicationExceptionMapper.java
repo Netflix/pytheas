@@ -48,13 +48,14 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
 
                 return Response
                     .status(error.getResponse().getStatus())
+                    .type(MediaType.APPLICATION_JSON_TYPE)
                     .entity(new JSONObject()
-                        .put("code",    error.getResponse().getStatus())
-                        .put("url",     context.getUriInfo().getPath())
-                        .put("error",   error.toString())
-                        .put("message", error.getMessage())
-                        .put("trace",   baos.toString())
-                        )
+                                    .put("code", error.getResponse().getStatus())
+                                    .put("url", context.getUriInfo().getPath())
+                                    .put("error", error.toString())
+                                    .put("message", error.getMessage())
+                                    .put("trace", baos.toString())
+                    )
                     .build();
             }
             catch (JSONException e) {
