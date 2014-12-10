@@ -30,7 +30,7 @@ subprojects {
         compile 'com.sun.jersey:jersey-json:1.11'
         compile 'com.sun.jersey:jersey-servlet:1.11'
 
-        compile 'org.slf4j:slf4j-api:1.7.0'
+        compile 'org.slf4j:slf4j-api:1.7.7'
         compile 'com.netflix.karyon:karyon-core:1.0.22'
         testCompile 'junit:junit:4.10'
         testCompile 'org.mockito:mockito-core:1.8.5'
@@ -43,7 +43,7 @@ project(':pytheas-core') {
 
     dependencies {
         compile 'commons-configuration:commons-configuration:1.8'
-        compile 'com.google.guava:guava:14.0'
+        compile 'com.google.guava:guava:14.0.1'
         compile 'com.google.inject.extensions:guice-servlet:3.0'
         compile 'org.codehaus.jettison:jettison:1.1'
         compile 'javax.servlet:servlet-api:2.5'
@@ -72,6 +72,7 @@ project(':pytheas-helloworld') {
     dependencies {
         compile project(':pytheas-core')
         compile 'com.netflix.karyon:karyon-extensions:1.0.22'
+        runtime 'org.slf4j:slf4j-simple:1.7.7'
         testCompile 'org.eclipse.jetty:jetty-server:7.6.7.v20120910'
         testCompile 'org.eclipse.jetty:jetty-servlet:7.6.7.v20120910'
     }
