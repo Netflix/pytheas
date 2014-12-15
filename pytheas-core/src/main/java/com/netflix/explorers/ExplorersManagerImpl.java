@@ -24,7 +24,6 @@ import com.netflix.explorers.context.GlobalModelContext;
 import com.netflix.explorers.services.ExplorerServiceCachedFactorySupplier;
 import com.netflix.explorers.services.ExplorerServiceInstanceSupplier;
 import com.netflix.explorers.sso.SsoAuthProviderWrapper;
-import com.netflix.karyon.spi.PropertyNames;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,17 +63,6 @@ public class ExplorersManagerImpl implements ExplorerManager {
             }
         }
 
-    }
-
-    private Collection<String> getBasePackages() {
-        List<String> toReturn = new ArrayList<String>();
-        String basePackagesStr = ConfigurationManager.getConfigInstance().getString(PropertyNames.SERVER_BOOTSTRAP_BASE_PACKAGES_OVERRIDE);
-        String[] basePackages = basePackagesStr.split(";");
-
-        for (String basePackage : basePackages) {
-            toReturn.add(String.valueOf(basePackage));
-        }
-        return toReturn;
     }
 
     @Override
