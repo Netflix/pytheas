@@ -148,7 +148,7 @@ public class ExplorerResource extends AbstractExplorerModule {
     public Response showHome() throws Exception {
         if (defaultController != null) {
             try {
-                String redirect = StringUtils.join(Arrays.asList(requestInvoker.get().getRequestURI().toString(), defaultController), "/");
+                String redirect = StringUtils.join(Arrays.asList(requestInvoker.get().getPathInfo().toString(), defaultController), "/");
                 return Response.temporaryRedirect(new URI(redirect)).build();
             } catch (URISyntaxException e) {
                 return Response.serverError().build();
