@@ -16,13 +16,11 @@
 package com.netflix.explorers;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
 
 import com.google.common.base.Supplier;
-import com.google.inject.ImplementedBy;
 import com.netflix.explorers.context.GlobalModelContext;
 
 /**
@@ -50,13 +48,13 @@ public interface ExplorerManager {
 	
 	/**
 	 * Add a module to the list of modules
-	 * @param def
+	 * @param module
 	 */
 	void registerExplorer(Explorer module);
 
     /**
      * Remove a previously registered explorer
-     * @param remoteExplorerModule
+     * @param module
      */
     void unregisterExplorer(Explorer module);
 	
@@ -108,27 +106,24 @@ public interface ExplorerManager {
     /**
      * Register a service class with an existing instance
      * @param <T>
-     * @param serviceClassName
+     * @param serviceClass
      * @param instance
-     * @return
      */
     <T> void registerService(Class<T> serviceClass, T instance);
     
     /**
      * Register a service class with a provider user to allocate an instance once requested
      * @param <T>
-     * @param serviceClassName
+     * @param serviceClass
      * @param supplier
-     * @return
      */
     <T> void registerService(Class<T> serviceClass, Supplier<T> supplier);
     
     /**
      * Register a service class with it's implementation
      * @param <T>
-     * @param serviceClassName
+     * @param serviceClass
      * @param serviceImplClassName
-     * @return
      */
     <T> void registerService(Class<T> serviceClass, Class<? extends T> serviceImplClassName);
 
