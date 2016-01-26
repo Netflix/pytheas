@@ -15,8 +15,6 @@
  */
 package com.netflix.explorers.sse;
 
-import javax.ws.rs.core.MediaType;
-
 public class OutboundEvent {
 	/**
      * Used for creating {@link OutboundEvent} instances.
@@ -67,7 +65,6 @@ public class OutboundEvent {
          * Set event data and java type of event data. Type will  be used for {@link javax.ws.rs.ext.MessageBodyWriter}
          * lookup.
          *
-         * @param type java type of supplied data. MUST NOT be {@code null}.
          * @param data event data. MUST NOT be {@code null}.
          * @return updated builder instance.
          */
@@ -83,13 +80,13 @@ public class OutboundEvent {
         /**
          * Build {@link OutboundEvent}.
          *
-         * <p>There are two valid configurations:
+         * There are two valid configurations:
          * <ul>
-         *     <li>when {@link Builder#comment} is set, all other parameters are optional. If {@link Builder#data(Class, Object)}
-         *     and {@link Builder#type} is set, event will be serialized after comment.</li>
-         *     <li>when {@link Builder#comment} is not set, {@link Builder#data(Class, Object)} and {@link Builder#type} HAVE TO
+         *     <li>when {@link Builder#comment} is set, all other parameters are optional. If {@link Builder#data(String)}
+         *     is set, event will be serialized after comment.</li>
+         *     <li>when {@link Builder#comment} is not set, {@link Builder#data(String)} HAVE TO
          *     be set, all other parameters are optional.</li>
-         * </ul></p>
+         * </ul>
          *
          * @return new {@link OutboundEvent} instance.
          * @throws IllegalStateException when called with invalid configuration.
@@ -115,8 +112,6 @@ public class OutboundEvent {
      *
      * @param name event name (field name "event").
      * @param id event id.
-     * @param type java type of events data.
-     * @param mediaType {@link MediaType} of events data.
      * @param data events data.
      * @param comment comment.
      */
