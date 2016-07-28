@@ -45,7 +45,7 @@ project(':pytheas-core') {
         compile 'com.google.code.findbugs:annotations:2.0.0'
         compile 'org.freemarker:freemarker:2.3.15'
         compile 'com.netflix.archaius:archaius-core:0.7.3'
-        compile 'com.netflix.governator:governator:1.11.0'
+        compile 'com.netflix.governator:governator:1.14.2'
         compile 'commons-collections:commons-collections:3.2.1'
         compile 'commons-codec:commons-codec:1.7'
         compile 'com.github.stephenc.high-scale-lib:high-scale-lib:1.1.2'

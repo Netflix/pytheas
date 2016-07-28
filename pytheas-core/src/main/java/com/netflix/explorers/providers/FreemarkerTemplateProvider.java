@@ -15,22 +15,19 @@
  */
 package com.netflix.explorers.providers;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.netflix.explorers.Explorer;
-import com.netflix.explorers.ExplorerManager;
-import com.netflix.explorers.context.GlobalModelContext;
-import com.netflix.explorers.context.RequestContext;
-import com.netflix.explorers.model.EmptyExplorer;
-import com.sun.jersey.api.view.Viewable;
-import freemarker.cache.*;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateModelException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLStreamHandler;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
@@ -40,17 +37,27 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLStreamHandler;
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.netflix.explorers.Explorer;
+import com.netflix.explorers.ExplorerManager;
+import com.netflix.explorers.context.GlobalModelContext;
+import com.netflix.explorers.context.RequestContext;
+import com.netflix.explorers.model.EmptyExplorer;
+import com.sun.jersey.api.view.Viewable;
+
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.cache.URLTemplateLoader;
+import freemarker.cache.WebappTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateModelException;
 
 @Singleton
 @Provider
@@ -68,13 +75,13 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
     
     private Configuration fmConfig = new Configuration();
     private boolean servletMode = false;
-    
-    @Inject(optional=true) ExplorerManager manager;
+    private ExplorerManager manager;
 
     @Context 
     private ThreadLocal<HttpServletRequest> requestInvoker;
-
-    public void setExplorerManager(ExplorerManager manager) {
+    
+    @Inject
+    public FreemarkerTemplateProvider(ExplorerManager manager) {
         this.manager = manager;
     }
 
@@ -97,11 +104,8 @@ public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
         fmConfig.setTemplateUpdateDelay(0);
         
         try {
-            if (manager != null) {
-                fmConfig.setSharedVariable("Global",    manager.getGlobalModel());
-                fmConfig.setSharedVariable("Explorers", manager);
-            }
-
+            fmConfig.setSharedVariable("Global",    manager.getGlobalModel());
+            fmConfig.setSharedVariable("Explorers", manager);
             fmConfig.setSharedVariable("toJson",    new ToJsonMethod());
         }
         catch (TemplateModelException e) {
