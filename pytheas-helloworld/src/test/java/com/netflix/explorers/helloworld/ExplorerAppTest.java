@@ -16,9 +16,12 @@
 package com.netflix.explorers.helloworld;
 
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.servlet.GuiceFilter;
 import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -33,12 +36,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import javax.ws.rs.core.MediaType;
 
 public class ExplorerAppTest {
     private static final Logger LOG = LoggerFactory.getLogger(ExplorerAppTest.class);
@@ -98,7 +100,7 @@ public class ExplorerAppTest {
 
 
     @Test
-    public void verifyRESTEndpoints() throws IOException {
+    public void verifyRESTEndpoints() throws Exception {
         HttpClient client = new DefaultHttpClient();
         for (Map.Entry<String, String> restEndPoint : REST_END_POINTS.entrySet()) {
             final String endPoint = buildLocalHostEndpoint(restEndPoint.getKey());
