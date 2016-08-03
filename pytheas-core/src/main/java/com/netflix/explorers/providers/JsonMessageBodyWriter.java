@@ -36,7 +36,6 @@ import com.netflix.explorers.annotations.ExplorerEntity;
  * A MessageBodyWriter implementation that uses Jackson ObjectMapper to serialize objects to JSON.
  */
 @Produces({"application/json"})
-@Provider
 public class JsonMessageBodyWriter implements MessageBodyWriter<Object> {
 
     private final ObjectMapper mapper;

@@ -15,6 +15,19 @@
  */
 package com.netflix.explorers.providers;
 
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.netflix.explorers.Explorer;
+import com.netflix.explorers.ExplorerManager;
+import com.netflix.explorers.context.GlobalModelContext;
+import com.netflix.explorers.context.RequestContext;
+import com.netflix.explorers.model.EmptyExplorer;
+import com.sun.jersey.api.view.Viewable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -36,20 +49,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.netflix.explorers.Explorer;
-import com.netflix.explorers.ExplorerManager;
-import com.netflix.explorers.context.GlobalModelContext;
-import com.netflix.explorers.context.RequestContext;
-import com.netflix.explorers.model.EmptyExplorer;
-import com.sun.jersey.api.view.Viewable;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -60,7 +59,6 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateModelException;
 
 @Singleton
-@Provider
 public class FreemarkerTemplateProvider implements MessageBodyWriter<Viewable>
 {
     private static final Logger LOG = LoggerFactory.getLogger(FreemarkerTemplateProvider.class);

@@ -33,9 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-
 @Singleton
-@Provider
 public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplicationException> {
     private static final Logger LOG = LoggerFactory.getLogger(WebApplicationExceptionMapper.class);
     private static List<Variant> supportedMediaTypes = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, MediaType.TEXT_HTML_TYPE).add().build();

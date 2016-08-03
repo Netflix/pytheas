@@ -22,7 +22,6 @@ import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-@Provider
 class NaturalNotationContextResolver implements ContextResolver<JAXBContext> {
    private JAXBContext context;
 

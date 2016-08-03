@@ -33,7 +33,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.netflix.explorers.annotations.ExplorerEntity;
 
 @Consumes({"application/json"})
-@Provider
 public class JsonMessageBodyReader implements MessageBodyReader<Object> {
     private final ObjectMapper mapper;
     
