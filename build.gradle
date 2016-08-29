@@ -53,9 +53,7 @@ project(':pytheas-core') {
         
         compile 'com.netflix.archaius:archaius-core:0.7.3'
         compile 'com.netflix.governator:governator:1.14.2'
-        
-        compile 'com.github.stephenc.high-scale-lib:high-scale-lib:1.1.2'
-        
+
         compile 'commons-collections:commons-collections:3.2.1'
         compile 'commons-codec:commons-codec:1.7'
         compile 'commons-beanutils:commons-beanutils:1.9.1'

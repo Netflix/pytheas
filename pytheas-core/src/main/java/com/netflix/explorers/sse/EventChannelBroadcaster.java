@@ -15,14 +15,17 @@
  */
 package com.netflix.explorers.sse;
 
-import org.cliffc.high_scale_lib.NonBlockingHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventChannelBroadcaster {
     private static final Logger LOG = LoggerFactory.getLogger(EventChannelBroadcaster.class);
 
-    private NonBlockingHashSet<EventChannel> channels = new NonBlockingHashSet<EventChannel>();
+    private Set<EventChannel> channels = Collections.newSetFromMap(new ConcurrentHashMap<EventChannel, Boolean>());
 
     public void registerEventChannel(final EventChannel channel) {
         channels.add(channel);
