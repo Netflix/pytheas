@@ -15,17 +15,17 @@
  */
 package com.netflix.explorers.sse;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-
-import javax.ws.rs.core.MediaType;
-
-import com.netflix.explorers.resources.EmbeddedContentResource;
-import org.cliffc.high_scale_lib.NonBlockingHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class EventChannel implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(EventChannel.class);
@@ -45,7 +45,7 @@ public class EventChannel implements Closeable {
     
     private boolean closed = false;
     
-    private NonBlockingHashSet<EventChannelListener> listeners = new NonBlockingHashSet<EventChannelListener>();
+    private Set<EventChannelListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<EventChannelListener, Boolean>());
     
     public EventChannel() {
         
