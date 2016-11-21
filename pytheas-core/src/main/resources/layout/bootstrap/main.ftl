@@ -7,11 +7,11 @@
 Missing body macro for ${nestedpage}
 </#macro>
 <#include "${nestedpage}">
-<html lang="en">
+<html>
   <head>
     <link rel="shortcut icon" href="${RequestContext.pathToRoot}res/css/images/favicon.ico" type="image/x-icon">
     <link rel="icon" href="${RequestContext.pathToRoot}res/css/images/favicon.ico" type="image/x-icon">
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8"/>
      <#include "js_css_include.ftl"/>
     <script type="text/javascript">
     <#include "main.js"/>
