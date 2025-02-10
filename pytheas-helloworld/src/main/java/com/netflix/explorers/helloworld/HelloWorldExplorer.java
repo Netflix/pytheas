@@ -18,8 +18,10 @@ package com.netflix.explorers.helloworld;
 
 import com.google.inject.Singleton;
 import com.netflix.explorers.AbstractExplorerModule;
+import com.netflix.karyon.spi.Application;
 
 @Singleton
+@Application
 public class HelloWorldExplorer extends AbstractExplorerModule {
 
     public HelloWorldExplorer() {
